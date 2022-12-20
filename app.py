@@ -10,21 +10,36 @@ def edge(s):
     return result
 
 
-def prefix_function(pattern):
+def prefix_function(pattern, j):
     m = len(pattern)
-    # TO-DO
+    if j == 0:
+        return -1
+    if 1 <= j <= m:
+        return edge(pattern[0:j - 1])
+    else:
+        return -10
 
 
 app = Flask(__name__)
 
 
-@app.route('/prova', methods=['POST'])
+@app.route('/KMP', methods=['POST'])
 def prova():
-    text = request.json["text"]
-    pattern = request.json["pattern"]
+    text, pattern, j, q = request.json["text"], request.json["pattern"], 0, 0
 
-    return {"result": edge(request.json["s"])}
-    # return {"text": text, "pattern": pattern}
+    # Checking if text or pattern are empty.
+    if text is None or pattern is None:
+        return {"Pattern or Text": "are empty."}
+
+    # KMP algorithm
+    for q in range(0, len(text)):
+        while j >= 0 and pattern[j] != text[q]:
+            j = prefix_function(pattern, j)
+        j += 1
+        if j == len(pattern):
+            return {"Result": q - len(pattern) + 1}
+
+    return {"Result": "There isn't matching."}
 
 
 if __name__ == '__main__':
