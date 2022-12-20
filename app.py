@@ -2,14 +2,12 @@ from flask import Flask, app, request
 
 
 def edge(s):
-    result, i, m = "", 0, len(s) - 1
-    while s[i] == s[m - i]:
-        if s[i] == s[m - i]:
-            i += 1
+    result, i, m = 0, 1, len(s)
+    while i != len(s):
+        result = i if s[0: i] == s[m - i: m] else result
+        i += 1
 
-    i = 1 if i == 0 else i
-
-    return i
+    return result
 
 
 def prefix_function(pattern):
@@ -25,7 +23,8 @@ def prova():
     text = request.json["text"]
     pattern = request.json["pattern"]
 
-    return {"text": text, "pattern": pattern}
+    return {"result": edge(request.json["s"])}
+    # return {"text": text, "pattern": pattern}
 
 
 if __name__ == '__main__':
